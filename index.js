@@ -6,8 +6,6 @@ const https = require("https");
 const host = "localhost";
 const port = 3000;
 
-const githubjobs_api = "https://jobs.github.com/positions.json?description=";
-
 const new_connection = function (req, res) {
     if (req.url === "/") {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -15,6 +13,7 @@ const new_connection = function (req, res) {
     }
     else if (req.url.startsWith("/search")) {
         let user_input = url.parse(req.url, true).query.title;
+		const githubjobs_api = "https://jobs.github.com/positions.json?description=";
         https.get(`${githubjobs_api}${user_input}`, function (github_jobs_stream) {
             let job_data = "";
             github_jobs_stream.on("data", (chunk) => job_data += chunk);
@@ -38,4 +37,4 @@ const generate_job_description = function (job) {
 
 const server = http.createServer(new_connection);
 server.listen(port, host);
-console.log(`Now Listening on Port ${host}:${port}`);
+console.log(`Now Listening on ${host}:${port}`);
